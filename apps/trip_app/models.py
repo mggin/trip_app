@@ -84,7 +84,7 @@ class TripManager(models.Manager):
         trip.destination = data['destination']
         trip.start_date = data['start_date']
         trip.end_date = data['end_date']
-        trip.plan = data['destination']
+        trip.plan = data['plan']
         trip.save()
         return trip
 

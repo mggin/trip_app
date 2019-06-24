@@ -51,7 +51,13 @@ def view_trips(request):
 
         for trip in other_trips:
             if trip.created_by != current_user and trip not in trips:
+                trip.start_date = trip.start_date.strftime('%m-%m-%Y')
+                trip.end_date = trip.end_date.strftime('%m-%d-%Y')
                 selected_other_trips.append(trip)
+
+        for trip in trips:
+            trip.start_date = trip.start_date.strftime('%m-%m-%Y')
+            trip.end_date = trip.end_date.strftime('%m-%d-%Y')
 
         context = {
             "id": request.session['id'],
