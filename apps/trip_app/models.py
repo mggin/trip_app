@@ -1,7 +1,7 @@
 from django.db import models
 import re
 import bcrypt
-
+import time
 from datetime import datetime
 
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
@@ -51,6 +51,9 @@ class User(models.Model):
 class TripManager(models.Manager):
 
     def validator(self, data):
+
+        start_date = time.strptime(data['start_date'], '%Y-%m-%d')
+        end_date = time.strptime(data['end_date'], '%Y-%m-%d')
         errors = []
         if len(data['destination']) < 3:
             errors.append('dest_err')
@@ -60,6 +63,8 @@ class TripManager(models.Manager):
             errors.append('start_err')
         if len(data['end_date']) == 0:
             errors.append('end_err')
+        if start_date > end_date:
+            errors.append('time_travel_err')
         return errors
     
     def get_trips(self, user_id):

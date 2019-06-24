@@ -40,23 +40,36 @@
         </div>
     </header>
     <form class="row" id="trip-form">
-        <small id="dest_err">Destination should be at least 3 character.</small>
         <div class="col-12 row m-2">
+            <div class="col-12 row">
+                <div class="col-3"></div>
+                <small id="dest_err" class="col-9 p-2">Destination should be at least 3 character.</small>
+            </div>
             <label class="col-3">Destination:</label>
             <input type="text" name="destination" class="form-control col-9" value="{{trip.destination}}">
         </div>
-        <small id="start_err">Plan should be at least 3 characters.</small>
         <div class="col-12 row m-2">
+            <div class="col-12 row">
+                <div class="col-3"></div>
+                <small id="start_err" class="col-9 p-2">Start Date should be at least 3 characters.</small>
+            </div>
             <label class="col-3">Start Date:</label>
             <input type="date" name="start_date" class="form-control col-9" value="{{trip.start_date}}">
         </div>
-        <small id="end_err">Plan should be at least 3 characters.</small>
         <div class="col-12 row m-2">
+            <div class="col-12 row">
+                <div class="col-3"></div>
+                <small id="time_travel_err" class="col-9 p-2">** Select the future date. **</small>
+                <small id="end_err" class="col-9 p-2">End Date shouldn't be empty.</small>
+            </div>
             <label class="col-3">End Date:</label>
             <input type="date" name="end_date" class="form-control col-9" value="{{trip.end_date}}">
         </div>
-        <small id="plan_err">Plan should be at least 3 characters.</small>
         <div class="col-12 row m-2">
+            <div class="col-12 row">
+                <div class="col-3"></div>
+                <small id="plan_err" class="col-9 p-2">Plan should be at least 3 characters.</small>
+            </div>
             <label class="col-3 ">Plan:</label>
             <textarea class="form-control col-9" name="plan">{{trip.plan}}</textarea>
         </div>
@@ -86,19 +99,19 @@
                     url: '/trips/{{trip.id}}/update',
                     data: trip_form,
                 })
-                .done((response_data) => {
-                    console.log(response_data) 
-                    if (!response_data.redirect) {
-                        for (let error_id of response_data.errors) {
-                            $(`#${error_id}`).show()
+                    .done((response_data) => {
+                        console.log(response_data)
+                        if (!response_data.redirect) {
+                            for (let error_id of response_data.errors) {
+                                $(`#${error_id}`).show()
+                            }
+                        } else {
+                            $('input').val('')
+                            $('small').hide()
+                            $('#msg-success').show()
+                            window.location = '/trips'
                         }
-                    } else {
-                        $('input').val('')
-                        $('small').hide()
-                        $('#msg-success').show()
-                        window.location = '/trips'
-                    }
-                })
+                    })
 
                 return false
             })
