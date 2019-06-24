@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <title>Trip Buddy</title>
+
+    <style>
+      body {
+        font-family: 'Roboto', sans-serif;
+      }
+      main {
+        display: flex;
+        flex-direction: row;
+      }
+
+      main div {
+        flex: 1;
+      }
+
+      form {
+        width: 300px;
+        margin: 0 auto;
+      }
+
+      label {
+        margin-top: 10px;
+      }
+
+      small {
+        display: block;
+      }
+
+      #radio-box input {
+        margin-left: 5px;
+      }
+
+      #radio-box label {
+        margin: 5px;
+        align-self: center;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h3 class="m-5 text-center">Welcome! Let's travel!</h3>
+    <main>
+      <div>
+        <h4 class="text-center">Register</h4>
+        <small class="text-success mb-1 text-center" id="msg-success">Successfully Registered</small>
+        <form id="register-form">
+          <label>First name:</label>
+          <small class="text-danger mb-1" id="f_name_err">First name should be at least 2 characters.</small>
+          <input type="text" class="form-control" name="first_name" />
+          <label>Last name:</label>
+          <small class="text-danger mb-1" id="l_name_err">Last name should be at least 2 characters.</small>
+          <input type="text" class="form-control" name="last_name" />
+          <label>Email:</label>
+          <small class="text-danger mb-1" id="invalid_email_err">** Invalid email address **</small>
+          <input type="text" class="form-control" name="email" />
+          <label>Password:</label>
+          <small class="text-danger mb-2" id="password_length_err">Password should be at least 8 characters.</small>
+          <input type="password" class="form-control" name="password" id="password"/>
+          <label>Confirm password:</label>
+          <small class="text-danger mb-1" id="p_match_err">Password didn't match.</small>
+          <input type="password" class="form-control" name="confirm_password" id="c_password"/>
+          <button id="register-btn" class="btn btn-info mt-3">Register</button>
+        </form>
+      </div>
+      <div>
+        <h4 class="text-center">Login</h4>
+        <small class="text-success mb-1 text-center"></small>
+        <small class="text-danger mb-1 text-center"></small>
+        <form id="login-form" >
+          <label>Email:</label>
+          <small class="text-danger mb-1" id="email_pass_err">Email or Password is invalid!!!</small>
+          <input type="text" class="form-control" name="email" />
+          <label>Password:</label>
+          <input type="password" class="form-control" name="password" />
+          <button id="login-btn" class="btn btn-info mt-3">Login</button>
+        </form>
+      </div>
+    </main>
+    <script>
+        $('document').ready(() => {
+            // this setup the token for csrf 
+            // this run errors -- need more info
+            $.ajaxSetup({
+                headers: { "X-CSRFToken": '{{csrf_token}}' }
+            });
+
+            $('small').hide()
+            $('#register-btn').click(() => {
+                let register_form = $('#register-form').serialize()
+                console.log('click')
+                $.ajax({
+                    method: "POST",
+                    url: 'users/create',
+                    data: register_form,
+                })
+                .done((response_data) => {   
+                    console.log(response_data)     
+                    if (!response_data.redirect) {
+                        for (let error_id of response_data.errors) {
+                            $(`#${error_id}`).show()
+                        }
+                    } else {
+                        $('input').val('')
+                        $('small').hide()
+                        $('#msg-success').show()
+                        // window.location = '/'
+                    }
+                })
+                return false
+            })
+
+            $('input').click(() => {
+                $('small').hide()
+            })
+
+            $('#c_password').keyup(() => {
+                let c_password = $('#c_password').val()
+                let password = $('#password').val()
+                if (c_password != password) {
+                    $('#p_match_err').show()
+                } else {
+                    $('#p_match_err').removeClass('text-danger')
+                    $('#p_match_err').addClass('text-success')
+                    $('#p_match_err').html('** Password match **')
+                }
+            })
+
+            $('#login-btn').click(() => {
+                let login_form = $('#login-form').serialize()
+                $.ajax({
+                    method: 'POST',
+                    url: '/login',
+                    data: login_form
+                })
+                .done((response_data) => {
+                    // console.log(response_data.user)
+                    if (response_data.error) {
+                        $('#email_pass_err').show()
+                    } else {
+                        console.log(response_data)
+                        window.location = response_data.url
+                    }
+                })
+                return false
+            })
+
+        })
+    </script>
+  </body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <title>Trip Buddy</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        header {
+            height: 100px;
+        }
+
+        body {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        table a.btn {
+            width: 80px;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="row justify-content-center align-items-center">
+        <div class="col-6 p-0 m-0">
+            <h3>Hello {{user_name}}</h3>
+        </div>
+        <div class="col-6 row justify-content-end">
+            <a href="/log_off" class="btn btn-danger m-1"> Logout</a>
+            <a href="/trips/form" class="btn btn-info m-1">Create a new trip!</a>
+        </div>
+    </header>
+    <table class="table table-borded table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>Destination</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Plan</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for trip in trips %}
+                {% if trip.created_by != user %}
+                <tr>
+                    <td>
+                        <a href="/trips/{{trip.id}}/show">{{trip.destination}}</a>
+                    </td>
+                    <td>{{trip.start_date}}</td>
+                    <td>{{trip.end_date}}</td>
+                    <td>{{trip.plan}}</td>
+                    <td>
+                        <a href="/trips/{{trip.id}}/cancel" class="btn btn-info">Cancel</a>
+                    </td>
+                </tr>
+
+            {% else %}
+            <tr>
+                <td>
+                    <a href="/trips/{{trip.id}}/show">{{trip.destination}}</a>
+                </td>
+                <td>{{trip.start_date}}</td>
+                <td>{{trip.end_date}}</td>
+                <td>{{trip.plan}}</td>
+                <td>
+                    <a href="/trips/{{trip.id}}/destroy" class="btn btn-danger">Remove</a> |
+                    <a href="/trips/{{trip.id}}/edit" class="btn btn-warning">Edit</a>
+                </td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+    <h4 class="mt-5">Other People Trips</h4>
+    <table class="table table-borded table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>Destination</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Plan</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for trip in other_trips %}
+            <tr>
+                <td>
+                    <a href="/trips/{{trip.id}}/show">{{trip.destination}}</a>
+                </td>
+                <td>{{trip.start_date}}</td>
+                <td>{{trip.end_date}}</td>
+                <td>{{trip.plan}}</td>
+                <td>
+                    <a href="/trips/{{trip.id}}/join" class="btn btn-info">Join</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+</body>
+
+</html>

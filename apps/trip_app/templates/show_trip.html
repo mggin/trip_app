@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+<link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<title>Trip Buddy</title>
+<style>
+     body {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        header {
+            height: 100px;
+        }
+</style>
+</head>
+<body>
+    <header class="row justify-content-center align-items-center">
+        <div class="col-6 row justify-content-center align-items-center">
+            <h3>Hello {{user_name}}!</h3>
+            <h4 class="ml-1">Read about this trip!</h4>
+        </div>
+        <div class="col-6 row justify-content-end">
+            <a href="/trips" class="btn btn-info m-1">Dashboard</a>
+            <a href="/log_off" class="btn btn-danger m-1"> Logout</a>
+        </div>
+    </header>
+    <p>{{trip.destination}}</p>
+    <div class="jumbotron">
+            <p>Start Date: {{trip.start_date}}</p>
+            <p>End Date: {{trip.end_date}}</p>
+            <p>Created on: {{trip.created_at}}</p>
+            <p>Last Updated: {{trip.updated_at}}</p>
+            <p>Plan: {{trip.plan}}</p>
+            <p>Created by: {{trip.created_by.first_name}} {{trip.created_by.last_name}}</p>
+    </div>
+    <div class="jumbotron">
+        <p>People who've joined the trip:</p>
+        {% for user in users %}
+            <li>{{user.first_name}} {{user.last_name}}</li>
+        {% endfor %}
+    </div>
+
+</body>
+</html>

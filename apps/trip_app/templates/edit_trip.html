@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <title>Trip Buddy</title>
+    <style>
+        body {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        header {
+            height: 100px;
+        }
+
+        textarea.form-control {
+            height: 150px;
+        }
+
+        small {
+            color: #e74c3c;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <header class="row justify-content-center align-items-center">
+        <div class="col-9 row justify-content-center align-items-center">
+            <h5>Hello {{user_name}}!</h5>
+            <h6 class="ml-1">Let's edit your trip!</h6>
+        </div>
+        <div class="col-3 row justify-content-end">
+            <a href="/log_off" class="btn btn-danger m-1"> Logout</a>
+        </div>
+    </header>
+    <form class="row" id="trip-form">
+        <small id="dest_err">Destination should be at least 3 character.</small>
+        <div class="col-12 row m-2">
+            <label class="col-3">Destination:</label>
+            <input type="text" name="destination" class="form-control col-9" value="{{trip.destination}}">
+        </div>
+        <small id="start_err">Plan should be at least 3 characters.</small>
+        <div class="col-12 row m-2">
+            <label class="col-3">Start Date:</label>
+            <input type="date" name="start_date" class="form-control col-9" value="{{trip.start_date}}">
+        </div>
+        <small id="end_err">Plan should be at least 3 characters.</small>
+        <div class="col-12 row m-2">
+            <label class="col-3">End Date:</label>
+            <input type="date" name="end_date" class="form-control col-9" value="{{trip.end_date}}">
+        </div>
+        <small id="plan_err">Plan should be at least 3 characters.</small>
+        <div class="col-12 row m-2">
+            <label class="col-3 ">Plan:</label>
+            <textarea class="form-control col-9" name="plan">{{trip.plan}}</textarea>
+        </div>
+        <div class="col-12 row justify-content-end">
+            <button id="cancel-btn" class="btn btn-danger m-1">Cancel</button>
+            <button id="update-btn" class="btn btn-success m-1">Update</button>
+        </div>
+    </form>
+    <script>
+        $('document').ready(() => {
+            // this setup the token for csrf 
+            // this run errors -- need more info
+            $.ajaxSetup({
+                headers: { "X-CSRFToken": '{{csrf_token}}' }
+            });
+            $('small').hide()
+            $('#cancel-btn').click(() => {
+                window.location = '/trips'
+                return false
+            })
+
+
+            $('#update-btn').click(() => {
+                let trip_form = $('#trip-form').serialize()
+                $.ajax({
+                    method: "POST",
+                    url: '/trips/{{trip.id}}/update',
+                    data: trip_form,
+                })
+                .done((response_data) => {
+                    console.log(response_data) 
+                    if (!response_data.redirect) {
+                        for (let error_id of response_data.errors) {
+                            $(`#${error_id}`).show()
+                        }
+                    } else {
+                        $('input').val('')
+                        $('small').hide()
+                        $('#msg-success').show()
+                        window.location = '/trips'
+                    }
+                })
+
+                return false
+            })
+            $('input').click(() => {
+                $('small').hide()
+            })
+
+        })
+    </script>
+</body>
+
+</html>
