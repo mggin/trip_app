@@ -18,6 +18,7 @@ class UserManager(models.Manager):
         if len(data['password']) < 8:
             errors.append('password_length_err')
         return errors
+
     def create_user(self, data):
         hashed_password = bcrypt.hashpw(data['password'].encode(), bcrypt.gensalt())
         user = User.objects.create(first_name = data['first_name'], last_name = data['last_name'], email = data['email'], password = hashed_password)
@@ -25,13 +26,16 @@ class UserManager(models.Manager):
 
     def validate_user(self, data):   
         users = User.objects.filter(email = data['email'])
-        current_user = users[0]
         context = {}
-        if bcrypt.checkpw(data['password'].encode(), current_user.password.encode()):
-            print('password match')
-            return current_user
-        else:
+        if len(users) < 1:
             return False
+        else:
+            current_user = users[0]
+            if  bcrypt.checkpw(data['password'].encode(), current_user.password.encode()):
+                print('password match')
+                return current_user
+            else:
+                return False
         
 class User(models.Model):
     first_name = models.CharField(max_length = 255)

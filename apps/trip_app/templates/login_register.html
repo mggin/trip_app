@@ -55,6 +55,7 @@
         <h4 class="text-center">Register</h4>
         <small class="text-success mb-1 text-center" id="msg-success">Successfully Registered</small>
         <form id="register-form">
+            {% csrf_token %}
           <label>First name:</label>
           <small class="text-danger mb-1" id="f_name_err">First name should be at least 2 characters.</small>
           <input type="text" class="form-control" name="first_name" />
@@ -78,6 +79,7 @@
         <small class="text-success mb-1 text-center"></small>
         <small class="text-danger mb-1 text-center"></small>
         <form id="login-form" >
+          {% csrf_token %}
           <label>Email:</label>
           <small class="text-danger mb-1" id="email_pass_err">Email or Password is invalid!!!</small>
           <input type="text" class="form-control" name="email" />
